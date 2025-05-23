@@ -1,3 +1,15 @@
 body {
-    background-color: #121212;
+  background-color: #121212; /* Dark background to match dark theme */
+}
+.content-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card {
+  transition: transform 0.2s; /* Optional: Adds hover effect */
+}
+.card:hover {
+  transform: translateY(-5px); /* Optional: Lift card on hover */
 }
