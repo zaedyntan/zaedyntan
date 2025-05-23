@@ -11,6 +11,6 @@ body {
 .card-container {
   margin-top: 1.5rem; /* Reduced space between heading and cards */
 }
-.btnpurple {
+.btn-purple {
   background-color: #bb86fc !important;
 }
