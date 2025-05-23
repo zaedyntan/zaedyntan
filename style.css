@@ -1,15 +1,16 @@
 body {
-  background-color: #121212; /* Dark background to match dark theme */
+  background-color: #121212;
 }
-.content-wrapper {
+.main-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Changed from center to start */
+  padding-top: 2rem; /* Added top padding */
 }
-.card {
-  transition: transform 0.2s; /* Optional: Adds hover effect */
+.card-container {
+  margin-top: 1.5rem; /* Reduced space between heading and cards */
 }
-.card:hover {
-  transform: translateY(-5px); /* Optional: Lift card on hover */
+.btnpurple {
+  background-color: #bb86fc !important;
 }
