@@ -80,7 +80,7 @@
       <script src="tools.js"></script>
       <script>
         const container = document.getElementById('tools-container');
-        tools.forEach((tool) => {
+        (window.tools || []).forEach((tool) => {
           const col = document.createElement('div');
           col.className = 'col-md-6 col-lg-4 mb-4';
 

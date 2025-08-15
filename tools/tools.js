@@ -1,4 +1,4 @@
-const tools = [
+window.tools = [
   {
     name: 'Pomodoro Timer',
     description: 'Simple Pomodoro timer with default work and break cycles.',

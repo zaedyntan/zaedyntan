@@ -73,38 +73,14 @@
         Pomodoro Timer
       </h1>
       <div class="row justify-content-center">
-
+        <div class="col-md-6 col-lg-4">
+          <div class="card text-center" data-bs-theme="dark">
+            <div class="card-body">
+              <div id="timer" class="timer-circle">25:00</div>
               <div class="d-flex justify-content-center gap-2">
                 <button id="start" class="btn btn-teal">Start</button>
                 <button id="reset" class="btn btn-purple">Reset</button>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <div class="card" data-bs-theme="dark">
-            <div class="card-body">
-              <h5 class="card-title">Phases</h5>
-              <ul id="phase-list" class="list-group mb-3"></ul>
-              <form id="phase-form" class="d-flex gap-2">
-                <input
-                  type="text"
-                  id="phase-name-input"
-                  class="form-control"
-                  placeholder="Name"
-                  required
-                />
-                <input
-                  type="number"
-                  id="phase-duration-input"
-                  class="form-control"
-                  placeholder="Minutes"
-                  min="1"
-                  required
-                />
-                <button class="btn btn-teal" type="submit">Add</button>
-              </form>
             </div>
           </div>
         </div>

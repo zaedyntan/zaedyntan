@@ -68,14 +68,21 @@ function updateDisplay() {
   const phase = phases[currentPhaseIndex];
   phaseNameDisplay.textContent = phase.name;
   display.textContent = formatTime(timeLeft);
-  const progress = ((phase.duration - timeLeft) / phase.duration) * 100;
+  const progress = Math.min(
+    ((phase.duration - timeLeft) / phase.duration) * 100,
+    100
+  );
   progressBar.style.width = `${progress}%`;
   progressBar.setAttribute('aria-valuenow', progress);
   renderPhaseList();
 }
 
 function beep() {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) {
+    return;
+  }
+  const ctx = new AudioCtx();
   const oscillator = ctx.createOscillator();
   const gain = ctx.createGain();
   oscillator.type = 'sine';
