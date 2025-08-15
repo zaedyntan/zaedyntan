@@ -68,7 +68,10 @@ function updateDisplay() {
   const phase = phases[currentPhaseIndex];
   phaseNameDisplay.textContent = phase.name;
   display.textContent = formatTime(timeLeft);
-  const progress = ((phase.duration - timeLeft) / phase.duration) * 100;
+  const progress = Math.min(
+    ((phase.duration - timeLeft) / phase.duration) * 100,
+    100
+  );
   progressBar.style.width = `${progress}%`;
   progressBar.setAttribute('aria-valuenow', progress);
   renderPhaseList();

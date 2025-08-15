@@ -8,6 +8,8 @@
   justify-content: center;
   margin: 2rem auto;
   font-size: 3rem;
+
+#phase-name {
   font-weight: 600;
 }
 
