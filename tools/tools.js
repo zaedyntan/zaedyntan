@@ -1,7 +1,7 @@
 const tools = [
   {
     name: 'Pomodoro Timer',
-    description: 'A simple Pomodoro timer with sound.',
+    description: 'Adjustable timer with customizable phases.',
     path: 'pomodoro/'
   }
 ];
