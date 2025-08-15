@@ -1,3 +1,14 @@
+.timer-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 6px solid #bb86fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+  font-size: 3rem;
+
 #phase-name {
   font-weight: 600;
 }
