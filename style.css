@@ -10,6 +10,7 @@ body {
   justify-content: flex-start; /* Changed from center to start */
   padding-top: 2rem; /* Added top padding */
 }
+
 .card-container {
   margin-top: 1.5rem; /* Reduced space between heading and cards */
 }
