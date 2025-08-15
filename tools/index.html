@@ -27,6 +27,10 @@
       <div class="container-fluid">
         <a class="navbar-brand title" href="../index.html">nihao</a>
         <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
           class="navbar-toggler collapsed"
           type="button"
           data-toggle="collapse"
@@ -71,6 +75,46 @@
       <h1 class="text-center text-white mb-3 px-3 display-4">
         Tools
       </h1>
+        <div class="row justify-content-center" id="tools-container"></div>
+      </div>
+
+      <script src="tools.js"></script>
+      <script>
+        const container = document.getElementById('tools-container');
+        tools.forEach((tool) => {
+          const col = document.createElement('div');
+          col.className = 'col-md-6 col-lg-4 mb-4';
+
+          const card = document.createElement('div');
+          card.className = 'card h-100';
+          card.setAttribute('data-bs-theme', 'dark');
+
+          const body = document.createElement('div');
+          body.className = 'card-body d-flex flex-column';
+
+          const title = document.createElement('h5');
+          title.className = 'card-title';
+          title.textContent = tool.name;
+
+          const desc = document.createElement('p');
+          desc.className = 'card-text flex-grow-1';
+          desc.textContent = tool.description;
+
+          const link = document.createElement('a');
+          link.href = tool.path;
+          link.className = 'btn btn-purple mt-auto';
+          link.textContent = 'Open';
+
+          body.appendChild(title);
+          body.appendChild(desc);
+          body.appendChild(link);
+          card.appendChild(body);
+          col.appendChild(card);
+          container.appendChild(col);
+        });
+      </script>
+    </body>
+  </html>
       <ul id="tools-list" class="list-group"></ul>
     </div>
 

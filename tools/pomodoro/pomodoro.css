@@ -1,3 +1,15 @@
+
+.timer-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 6px solid #bb86fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+  font-size: 3rem;
+  font-weight: 600;
 #timer {
   font-size: 4rem;
   margin: 2rem 0;
