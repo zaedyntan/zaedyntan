@@ -1,166 +1,177 @@
-(() => {
-  const phases = []; // {name, duration, type?: 'loop'}
-  let current = 0;
-  let timeLeft = 0;
-  let timer = null;
+// Custom Timer with add/remove segments support
+// Expects the following DOM ids: 
+// #timer, #phase-name, #progress-bar, #start, #reset, 
+// #phase-list, #phase-form, #phase-name-input, #phase-duration-input
 
-  const $ = (id) => document.getElementById(id);
-  const display = $('timer');
-  const phaseNameDisplay = $('phase-name');
-  const progressBar = $('progress-bar');
-  const startBtn = $('start');
-  const resetBtn = $('reset');
-  const phaseList = $('phase-list');
-  const form = $('phase-form');
-  const nameInput = $('phase-name-input');
-  const durationInput = $('phase-duration-input');
-  const addLoopBtn = document.getElementById('add-loop');
+const phases = [];
+let currentPhaseIndex = 0;
+let timeLeft = 0;
+let interval = null;
+let running = false;
 
-  function formatTime(s) {
-    const m = Math.floor(s/60), sec = s%60;
-    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+const display = document.getElementById('timer');
+const phaseNameDisplay = document.getElementById('phase-name');
+const progressBar = document.getElementById('progress-bar');
+const startBtn = document.getElementById('start');
+const resetBtn = document.getElementById('reset');
+const phaseList = document.getElementById('phase-list');
+const phaseForm = document.getElementById('phase-form');
+const phaseNameInput = document.getElementById('phase-name-input');
+const phaseDurationInput = document.getElementById('phase-duration-input');
+const skipBtn = document.getElementById('skip');
+if (skipBtn) {
+  skipBtn.addEventListener('click', () => { if (!phases.length) return; timeLeft = 0; tick(); });
+}
+const loopToggle = document.getElementById('loop-toggle');
+if (loopToggle) {
+  loopEnabled = !!loopToggle.checked;
+  loopToggle.addEventListener('change', () => loopEnabled = !!loopToggle.checked);
+}
+
+
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function currentPhase() { return phases[currentPhaseIndex] || null; }
+
+function updateDisplay() {
+  const phase = currentPhase();
+  if (!phase) {
+    display.textContent = '00:00';
+    phaseNameDisplay.textContent = 'No segments';
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', '0');
+    return;
   }
+  display.textContent = formatTime(timeLeft);
+  phaseNameDisplay.textContent = phase.name;
+  const pct = Math.max(0, Math.min(100, ((phase.duration - timeLeft) / phase.duration) * 100));
+  progressBar.style.width = pct + '%';
+  progressBar.setAttribute('aria-valuenow', String(Math.round(pct)));
+}
 
-  function beep() {
+function renderPhaseList() {
+  phaseList.innerHTML = '';
+  phases.forEach((p, i) => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex align-items-center justify-content-between';
+    li.innerHTML = `
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-secondary">${i + 1}</span>
+        <strong>${p.name}</strong>
+        <span class="text-body-secondary">(${formatTime(p.duration)})</span>
+        ${i === currentPhaseIndex ? '<span class="badge bg-teal">Current</span>' : ''}
+      </div>
+      <div class="btn-group btn-group-sm">
+        <button class="btn btn-outline-warning" data-action="move-up" ${i===0?'disabled':''}><i class="bi bi-arrow-up"></i></button>
+        <button class="btn btn-outline-warning" data-action="move-down" ${i===phases.length-1?'disabled':''}><i class="bi bi-arrow-down"></i></button>
+        <button class="btn btn-outline-danger" data-action="remove"><i class="bi bi-trash"></i></button>
+      </div>`;
+    li.querySelector('[data-action="remove"]').addEventListener('click', () => removePhase(i));
+    li.querySelector('[data-action="move-up"]').addEventListener('click', () => movePhase(i, -1));
+    li.querySelector('[data-action="move-down"]').addEventListener('click', () => movePhase(i, +1));
+    phaseList.appendChild(li);
+  });
+}
+
+function addPhase(name, seconds) {
+  phases.push({ name, duration: seconds });
+  if (phases.length === 1) { currentPhaseIndex = 0; timeLeft = seconds; }
+  renderPhaseList(); updateDisplay();
+}
+
+function removePhase(index) {
+  if (index < 0 || index >= phases.length) return;
+  const removingCurrent = index === currentPhaseIndex;
+  phases.splice(index, 1);
+
+  if (phases.length === 0) {
+    clearInterval(interval); interval = null; running = false;
+    startBtn.textContent = 'Start'; currentPhaseIndex = 0; timeLeft = 0;
+  } else {
+    if (index < currentPhaseIndex) currentPhaseIndex -= 1;
+    else if (removingCurrent) {
+      if (currentPhaseIndex >= phases.length) currentPhaseIndex = phases.length - 1;
+      timeLeft = phases[currentPhaseIndex].duration;
+    }
+  }
+  renderPhaseList(); updateDisplay();
+}
+
+function movePhase(index, delta) {
+  const j = index + delta; if (j < 0 || j >= phases.length) return;
+  [phases[index], phases[j]] = [phases[j], phases[index]];
+  if (currentPhaseIndex === index) currentPhaseIndex = j;
+  else if (currentPhaseIndex === j) currentPhaseIndex = index;
+  renderPhaseList(); updateDisplay();
+}
+
+function nextPhase() {
+  if (phases.length === 0) return;
+  if (currentPhaseIndex + 1 >= phases.length) {
+    if (!loopEnabled) {
+      running = false;
+      clearInterval(interval);
+      startBtn.textContent = 'Start';
+      currentPhaseIndex = phases.length - 1;
+      timeLeft = 0;
+      updateDisplay();
+      renderPhaseList();
+      return;
+    }
+    currentPhaseIndex = 0;
+  } else {
+    currentPhaseIndex += 1;
+  }
+  timeLeft = phases[currentPhaseIndex].duration;
+  updateDisplay();
+  renderPhaseList();
+}
+
+function tick() {
+  if (!running) return;
+  if (timeLeft > 0) { timeLeft -= 1; updateDisplay(); return; }
+  try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.value = 1000;
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    gain.gain.value = 0.05;
-    osc.start(); setTimeout(()=>{osc.stop(); ctx.close()}, 250);
+    const o = ctx.createOscillator(); o.connect(ctx.destination); o.start();
+    setTimeout(()=>{ o.stop(); ctx.close(); }, 200);
+  } catch {}
+  nextPhase();
+}
+
+function startStop() {
+  if (running) { running = false; clearInterval(interval); startBtn.textContent = 'Start'; }
+  else {
+    if (!currentPhase()) return;
+    running = true; startBtn.textContent = 'Pause';
+    clearInterval(interval); interval = setInterval(tick, 1000);
   }
+}
 
-  function renderList() {
-    phaseList.innerHTML = '';
-    phases.forEach((p, i) => {
-      const li = document.createElement('li');
-      li.className = 'list-group-item d-flex justify-content-between align-items-center';
-      li.textContent = p.type === 'loop' ? `↻ Loop to start` : p.name;
-      const right = document.createElement('span');
-      right.className = 'badge bg-secondary';
-      right.textContent = p.type === 'loop' ? '' : formatTime(p.duration);
-      if (i === current) li.classList.add('active');
-      phaseList.appendChild(li);
-    });
+function resetAll() {
+  running = false; clearInterval(interval); startBtn.textContent = 'Start';
+  currentPhaseIndex = 0; timeLeft = currentPhase() ? currentPhase().duration : 0;
+  updateDisplay(); renderPhaseList();
+}
+
+phaseForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = (phaseNameInput.value || '').trim() || 'Segment';
+  const mins = parseInt(phaseDurationInput.value, 10);
+  if (Number.isFinite(mins) && mins > 0) {
+    addPhase(name, mins * 60);
+    phaseNameInput.value = ''; phaseDurationInput.value = ''; phaseNameInput.focus();
   }
+});
 
-  function render() {
-    if (!phases.length) {
-      display.textContent = '00:00';
-      phaseNameDisplay.textContent = '';
-      progressBar.style.width = '0%';
-      progressBar.setAttribute('aria-valuenow','0');
-      return;
-    }
-    const p = phases[current];
-    phaseNameDisplay.textContent = p.type === 'loop' ? 'Loop' : p.name;
-    if (p.type === 'loop') {
-      display.textContent = '--:--';
-      progressBar.style.width = '0%';
-      progressBar.setAttribute('aria-valuenow','0');
-    } else {
-      display.textContent = formatTime(timeLeft);
-      const pct = ((p.duration - timeLeft)/p.duration)*100;
-      progressBar.style.width = pct + '%';
-      progressBar.setAttribute('aria-valuenow', String(pct));
-    }
-    renderList();
-  }
+startBtn.addEventListener('click', startStop);
+resetBtn.addEventListener('click', resetAll);
 
-  function stop() {
-    clearInterval(timer); timer = null;
-    startBtn.textContent = 'Start';
-    startBtn.classList.remove('btn-secondary'); startBtn.classList.add('btn-teal');
-    render();
-  }
-
-  function nextNonLoop() {
-    current += 1;
-    if (current >= phases.length) { stop(); return; }
-    const p = phases[current];
-    if (p.type === 'loop') {
-      current = 0;
-    }
-    const n = phases[current];
-    timeLeft = n.type === 'loop' ? 0 : n.duration;
-    render();
-  }
-
-  function tick() {
-    const p = phases[current];
-    if (!p || p.type === 'loop') { stop(); return; }
-    if (timeLeft > 0) {
-      timeLeft -= 1; render();
-    } else {
-      beep();
-      if (current + 1 < phases.length) {
-        current += 1;
-        const n = phases[current];
-        if (n.type === 'loop') {
-          current = 0;
-        }
-        const cur = phases[current];
-        timeLeft = cur.type === 'loop' ? 0 : cur.duration;
-        render();
-      } else {
-        stop();
-      }
-    }
-  }
-
-  function start() {
-    if (timer) {
-      clearInterval(timer); timer = null;
-      startBtn.textContent = 'Resume';
-      startBtn.classList.remove('btn-secondary'); startBtn.classList.add('btn-teal');
-      return;
-    }
-    if (!phases.length) return;
-    if (timeLeft === 0 && phases[0].type !== 'loop') timeLeft = phases[0].duration;
-    timer = setInterval(tick, 1000);
-    startBtn.textContent = 'Pause';
-    startBtn.classList.remove('btn-teal'); startBtn.classList.add('btn-secondary');
-  }
-
-  function reset() {
-    clearInterval(timer); timer = null;
-    current = 0;
-    timeLeft = phases[0] && phases[0].type !== 'loop' ? phases[0].duration : 0;
-    startBtn.textContent = 'Start';
-    startBtn.classList.remove('btn-secondary'); startBtn.classList.add('btn-teal');
-    render();
-  }
-
-  function skip() { beep(); nextNonLoop(); }
-
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (phases.some(p => p.type === 'loop')) return; // lock after loop
-    const name = nameInput.value.trim();
-    const mins = parseInt(durationInput.value, 10);
-    if (!name || !Number.isFinite(mins) || mins <= 0) return;
-    phases.push({ name, duration: mins*60 });
-    if (phases.length === 1) { current = 0; timeLeft = phases[0].duration; }
-    nameInput.value = ''; durationInput.value = '';
-    render();
-  });
-
-  addLoopBtn?.addEventListener('click', () => {
-    if (!phases.length) return;            // need at least one segment before loop
-    if (phases.some(p => p.type === 'loop')) return; // only one loop at end
-    phases.push({ type: 'loop' });
-    render();
-  });
-
-  document.getElementById('skip')?.addEventListener('click', skip);
-  startBtn?.addEventListener('click', start);
-  resetBtn?.addEventListener('click', reset);
-
-  // Defaults
-  phases.push({ name: 'Work', duration: 25*60 }, { name: 'Break', duration: 5*60 });
-  current = 0; timeLeft = phases[0].duration;
-  render();
-})();
+addPhase('Work', 25 * 60);
+addPhase('Break', 5 * 60);
+timeLeft = (phases[0] || {}).duration || 0;
+updateDisplay(); renderPhaseList();
