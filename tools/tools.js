@@ -1,7 +1,12 @@
 const tools = [
   {
     name: 'Pomodoro Timer',
-    description: 'A simple Pomodoro timer with sound.',
+    description: 'Simple Pomodoro timer with default work and break cycles.',
     path: 'pomodoro/'
+  },
+  {
+    name: 'Custom Timer',
+    description: 'Adjustable timer with customizable phases.',
+    path: 'custom-timer/'
   }
 ];
