@@ -31,6 +31,10 @@
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent"
+          class="navbar-toggler collapsed"
+          type="button"
+          data-toggle="collapse"
+          data-target=".navbar-collapse"
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
@@ -111,3 +115,24 @@
       </script>
     </body>
   </html>
+      <ul id="tools-list" class="list-group"></ul>
+    </div>
+
+    <script src="tools.js"></script>
+    <script>
+      const list = document.getElementById('tools-list');
+      tools.forEach((tool) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item bg-transparent text-white';
+        const link = document.createElement('a');
+        link.href = tool.path;
+        link.textContent = tool.name;
+        li.appendChild(link);
+        const desc = document.createElement('p');
+        desc.textContent = tool.description;
+        li.appendChild(desc);
+        list.appendChild(li);
+      });
+    </script>
+  </body>
+</html>
