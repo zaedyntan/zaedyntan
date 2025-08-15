@@ -1,5 +1,7 @@
 body {
-  background-color: #121212;
+  background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
+  color: #f8f9fa;
+  font-family: "Poppins", sans-serif;
 }
 #main-container {
   min-height: 100vh;
@@ -10,6 +12,18 @@ body {
 }
 .card-container {
   margin-top: 1.5rem; /* Reduced space between heading and cards */
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.5);
 }
 .btn-purple {
   background-color: #bb86fc !important;
