@@ -31,10 +31,6 @@
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent"
-          class="navbar-toggler collapsed"
-          type="button"
-          data-toggle="collapse"
-          data-target=".navbar-collapse"
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
@@ -81,7 +77,7 @@
       <script src="tools.js"></script>
       <script>
         const container = document.getElementById('tools-container');
-        tools.forEach((tool) => {
+        (window.tools || []).forEach((tool) => {
           const col = document.createElement('div');
           col.className = 'col-md-6 col-lg-4 mb-4';
 
@@ -115,8 +111,3 @@
       </script>
     </body>
   </html>
-      <ul id="tools-list" class="list-group"></ul>
-    </div>
-
-  </body>
-</html>
