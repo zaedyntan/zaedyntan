@@ -10,10 +10,13 @@
   margin: 2rem auto;
   font-size: 3rem;
   font-weight: 600;
+}
+
 #timer {
   font-size: 4rem;
   margin: 2rem 0;
 }
+
 .controls {
   text-align: center;
 }
