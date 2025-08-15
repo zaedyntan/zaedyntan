@@ -1,24 +1,54 @@
-.timer-circle {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: 6px solid #bb86fc;
+/* Layout the card content without stretching the circle */
+.timer-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* center horizontally */
+  justify-content: center; /* mild vertical centering of the whole stack */
+  gap: 1rem;             /* space between circle, progress, buttons */
+}
+
+/* Make the circle actually a circle and center the text inside it */
+#timer.timer-circle {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 2rem auto;
-  font-size: 3rem;
-}
 
-#phase-name {
-  font-weight: 600;
-}
+  /* Lock aspect ratio so it can NEVER become an ellipse */
+  width: 180px;              /* tweak size as you like */
+  height: 180px;
+  aspect-ratio: 1 / 1;       /* belt-and-suspenders */
+  border-radius: 50%;
 
-#timer {
-  font-size: 4rem;
-  margin: 2rem 0;
-}
+  /* Optional styling if you want a visible ring */
+  /* border: 6px solid rgba(255,255,255,0.2); */
+  /* box-shadow: inset 0 0 0 4px rgba(255,255,255,0.08); */
 
-.controls {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1;
   text-align: center;
+
+  /* Prevent flex parents from stretching it */
+  flex: 0 0 auto;
+  align-self: center;
+  margin: 0.25rem 0 0.5rem;
+}
+
+/* Ensure the progress bar fills width but doesn't squish the circle */
+.timer-card .progress {
+  width: 100%;
+  max-width: 360px;   /* optional cap so it looks nice next to a 180px circle */
+}
+
+/* Make sure nothing upstream forces stretching */
+.card-body.timer-card.timer-wrapper {
+  /* Remove any height:100% or align-items: stretch that might exist elsewhere */
+  align-items: center;
+}
+
+#timer.timer-circle {
+  background-color: transparent;        /* let site background show through */
+  border: 6px solid #6f42c1;             /* theme purple border */
+  border-radius: 50%;                    /* keep it perfectly round */
+  color: white;                          /* timer text color */
+  
 }

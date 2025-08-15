@@ -15,7 +15,9 @@
   const startBtn = $('start');
   const resetBtn = $('reset');
   const skipBtn = $('skip');
-
+  if (skipBtn) {
+    skipBtn.addEventListener('click', () => { timeLeft = 1; tick(); });
+  }
   function formatTime(s) {
     const m = Math.floor(s / 60);
     const sec = s % 60;

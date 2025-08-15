@@ -18,6 +18,17 @@ const phaseList = document.getElementById('phase-list');
 const phaseForm = document.getElementById('phase-form');
 const phaseNameInput = document.getElementById('phase-name-input');
 const phaseDurationInput = document.getElementById('phase-duration-input');
+const skipBtn = document.getElementById('skip');
+if (skipBtn) {
+  skipBtn.addEventListener('click', () => { if (!phases.length) return; timeLeft = 0; tick(); });
+}
+const loopToggle = document.getElementById('loop-toggle');
+if (loopToggle) {
+  loopEnabled = !!loopToggle.checked;
+  loopToggle.addEventListener('change', () => loopEnabled = !!loopToggle.checked);
+}
+
+
 
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60);
@@ -101,8 +112,24 @@ function movePhase(index, delta) {
 
 function nextPhase() {
   if (phases.length === 0) return;
-  currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
-  timeLeft = phases[currentPhaseIndex].duration; updateDisplay();
+  if (currentPhaseIndex + 1 >= phases.length) {
+    if (!loopEnabled) {
+      running = false;
+      clearInterval(interval);
+      startBtn.textContent = 'Start';
+      currentPhaseIndex = phases.length - 1;
+      timeLeft = 0;
+      updateDisplay();
+      renderPhaseList();
+      return;
+    }
+    currentPhaseIndex = 0;
+  } else {
+    currentPhaseIndex += 1;
+  }
+  timeLeft = phases[currentPhaseIndex].duration;
+  updateDisplay();
+  renderPhaseList();
 }
 
 function tick() {

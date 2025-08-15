@@ -54,10 +54,6 @@
                 <button class="btn btn-teal" type="submit">Add</button>
               </div>
             </form>
-            <div class="mt-2">
-              <button id="add-loop" class="btn btn-outline-secondary btn-sm" type="button" title="Add loop to start">Add Loop ↻</button>
-              <small class="text-muted ms-2">No segments can be added after a loop.</small>
-            </div>
             <ul id="phase-list" class="list-group mt-3"></ul>
           </div>
         </div>
@@ -67,14 +63,22 @@
         <div class="card text-center" data-bs-theme="dark">
           <div class="card-body">
             <div id="phase-name" class="badge bg-secondary mb-2">Work</div>
-            <div id="timer" class="timer-circle">25:00</div>
+            <div class="card-body timer-card"><div id="timer" class="timer-circle">25:00</div></div>
+            
             <div class="progress mb-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progress">
               <div id="progress-bar" class="progress-bar" style="width:0%"></div>
             </div>
             <div class="d-flex justify-content-center gap-2">
               <button id="start" class="btn btn-teal">Start</button>
-              <button id="reset" class="btn btn-purple">Reset</button>
-              <button id="skip" class="btn btn-secondary">Skip</button>
+<button id="reset" class="btn btn-purple">Reset</button>
+<button id="skip" class="btn btn-secondary">Skip</button>
+
+<ul id="phase-list" class="list-group list-group-flush"></ul>
+<div class="form-check mt-3">
+  <input class="form-check-input" type="checkbox" id="loop-toggle" checked>
+  <label class="form-check-label" for="loop-toggle">Loop sequence</label>
+</div>
+
             </div>
           </div>
         </div>
