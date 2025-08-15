@@ -1,7 +1,7 @@
 body {
   background-color: #121212;
 }
-.main-container {
+#main-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
