@@ -78,11 +78,7 @@ function updateDisplay() {
 }
 
 function beep() {
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (!AudioCtx) {
-    return;
-  }
-  const ctx = new AudioCtx();
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const oscillator = ctx.createOscillator();
   const gain = ctx.createGain();
   oscillator.type = 'sine';
