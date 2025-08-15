@@ -115,8 +115,10 @@
       <script src="commit.js"></script>
 <div id="commit"></div>
 <script>
-  document.getElementById("commit").innerText =
-    `Commit: ${commitHash} — ${commitMessage}`;
+  if (typeof commitHash !== "undefined" && typeof commitMessage !== "undefined") {
+    document.getElementById("commit").innerText =
+      `Commit: ${commitHash} — ${commitMessage}`;
+  }
 </script>
 
       
