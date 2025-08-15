@@ -1,3 +1,4 @@
+
 (() => {
   const phases = [
     { name: 'Work', duration: 25 * 60 },
@@ -85,6 +86,7 @@
     ticking = null;
     currentPhaseIndex = 0;
     timeLeft = phases[0].duration;
+
     startBtn.textContent = 'Start';
     startBtn.classList.remove('btn-secondary');
     startBtn.classList.add('btn-teal');
