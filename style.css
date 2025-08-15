@@ -28,3 +28,8 @@ body {
 .btn-purple {
   background-color: #bb86fc !important;
 }
+
+.btn-teal {
+  background-color: #03dac5 !important;
+  color: #1f1c2c !important;
+}
